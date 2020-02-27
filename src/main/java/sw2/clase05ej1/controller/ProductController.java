@@ -3,10 +3,7 @@ package sw2.clase05ej1.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sw2.clase05ej1.entity.Product;
 import sw2.clase05ej1.repository.CategoryRepository;
@@ -34,14 +31,16 @@ public class ProductController {
     }
 
     @GetMapping("/new")
-    public String nuevoProductoFrm(Model model) {
+    public String nuevoProductoFrm(@ModelAttribute("product") Product product,
+                                   Model model) {
         model.addAttribute("listaCategorias", categoryRepository.findAll());
-        model.addAttribute("listaProveedores",supplierRepository.findAll());
+        model.addAttribute("listaProveedores", supplierRepository.findAll());
         return "product/newFrm";
     }
 
     @PostMapping("/save")
-    public String guardarProducto(Product product, RedirectAttributes attr) {
+    public String guardarProducto(@ModelAttribute("product") Product product,
+                                  RedirectAttributes attr) {
         if (product.getId() == 0) {
             attr.addFlashAttribute("msg", "Producto creado exitosamente");
         } else {
@@ -52,16 +51,16 @@ public class ProductController {
     }
 
     @GetMapping("/edit")
-    public String editarTransportista(Model model,@RequestParam("id") int id) {
+    public String editarTransportista(@ModelAttribute("product") Product product,
+                                      Model model, @RequestParam("id") int id) {
 
         Optional<Product> optProduct = productRepository.findById(id);
-
         if (optProduct.isPresent()) {
-            Product product = optProduct.get();
+            product = optProduct.get();
             model.addAttribute("product", product);
             model.addAttribute("listaCategorias", categoryRepository.findAll());
-            model.addAttribute("listaProveedores",supplierRepository.findAll());
-            return "product/editFrm";
+            model.addAttribute("listaProveedores", supplierRepository.findAll());
+            return "product/newFrm";
         } else {
             return "redirect:/product";
         }
@@ -76,7 +75,7 @@ public class ProductController {
 
         if (optProduct.isPresent()) {
             productRepository.deleteById(id);
-            attr.addFlashAttribute("msg","Producto borrado exitosamente");
+            attr.addFlashAttribute("msg", "Producto borrado exitosamente");
         }
         return "redirect:/product";
 
