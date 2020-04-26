@@ -4,20 +4,20 @@
     <body>
         <div class="container">
             <nav th:replace="fragments/navbar.html :: navbar( active = 'Shipper')"></nav>
-            <h2>Nuevo Transportista</h2>
+            <h2 th:text="${shipper.companyname==null?'Nuevo Transportista':'Editar Transportista'}"></h2>
             <div th:if="${errorCompany != null}" th:text="${errorCompany}" class="alert alert-danger" role="alert"></div>
             <hr/>
-            <form method="post" th:action="@{'/shipper/save'}">
+            <form method="post" th:action="@{'/shipper/save'}" th:object="${shipper}" >
                 <div class="form-group">
                     <label for="companyname">Nombre de la compañía</label>
-                    <input name="companyname" type="text" class="form-control" id="companyname">
+                    <input th:field="*{companyname}" type="text" class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="phone">Teléfono</label>
-                    <input name="phone" type="text" class="form-control" id="phone">
+                    <input th:field="*{phone}" type="text" class="form-control">
                 </div>
                 <a th:href="@{'/shipper/list'}" class="btn btn-danger">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Registrar</button>
+                <button type="submit" class="btn btn-primary" th:text="${shipper.companyname==null?'Registrar':'Actualizar'}">Texto para el botón</button>
             </form>
         </div>
     </body>
