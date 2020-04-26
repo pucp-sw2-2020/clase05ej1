@@ -5,6 +5,7 @@
         <div class="container">
             <nav th:replace="fragments/navbar.html :: navbar( active = 'Shipper')"></nav>
             <h2>Nuevo Transportista</h2>
+            <div th:if="${errorCompany != null}" th:text="${errorCompany}" class="alert alert-danger" role="alert"></div>
             <hr/>
             <form method="post" th:action="@{'/shipper/save'}">
                 <div class="form-group">

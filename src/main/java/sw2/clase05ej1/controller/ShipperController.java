@@ -36,14 +36,20 @@ public class ShipperController {
     }
 
     @PostMapping("/save")
-    public String guardarNuevoTransportista(Shipper shipper, RedirectAttributes attr) {
-        if (shipper.getShipperId() == 0) {
-            attr.addFlashAttribute("msg", "Usuario creado exitosamente");
+    public String guardarNuevoTransportista(Shipper shipper, Model model, RedirectAttributes attr) {
+
+        if (shipper.getCompanyname().equals("")) {
+            model.addAttribute("errorCompany", "El nombre no puede ser vacío");
+            return "shipper/newFrm";
         } else {
-            attr.addFlashAttribute("msg", "Usuario actualizado exitosamente");
+            if (shipper.getShipperId() == 0) {
+                attr.addFlashAttribute("msg", "Usuario creado exitosamente");
+            } else {
+                attr.addFlashAttribute("msg", "Usuario actualizado exitosamente");
+            }
+            shipperRepository.save(shipper);
+            return "redirect:/shipper/list";
         }
-        shipperRepository.save(shipper);
-        return "redirect:/shipper/list";
     }
 
     @GetMapping("/edit")
@@ -70,7 +76,7 @@ public class ShipperController {
 
         if (optShipper.isPresent()) {
             shipperRepository.deleteById(id);
-            attr.addFlashAttribute("msg","Transportista borrado exitosamente");
+            attr.addFlashAttribute("msg", "Transportista borrado exitosamente");
         }
         return "redirect:/shipper/list";
 
@@ -78,7 +84,7 @@ public class ShipperController {
 
     @PostMapping("/BuscarTransportistas")
     public String buscarTransportista(@RequestParam("searchField") String searchField,
-                                      Model model){
+                                      Model model) {
 
         List<Shipper> listaTransportistas = shipperRepository.buscarTransPorCompName(searchField);
         model.addAttribute("shipperList", listaTransportistas);
